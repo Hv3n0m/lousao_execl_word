@@ -57,6 +57,7 @@ gaoshu_list = []
 zhongshu_list = []
 dishu_list = []
 zongshu_list = []
+ld_list = []
 
 
 
@@ -66,7 +67,7 @@ for host in hosts:
     soup = BeautifulSoup(open(url + host.get('href') ,encoding='utf8'),features="html.parser")
     vuls = soup.select('#vuln_list > tbody > tr > td > ul > li > div > span')
     #level_dangers = soup.select('#vuln_list > tbody > tr > td > ul > li > div > span')
-
+    ip_list.append(host.get_text())
     #存入字典并转发成列表
     temp = []
     high_list = []
@@ -98,17 +99,21 @@ for host in hosts:
             'level_danger' : '高',
             'vul' : v,
         })
-        
+    for t in temp:
+        t = (t + '\r')
+        ld_list.append(t)
+        print (t)
+ 
+
     zong_list = low_list + middle_list + high_list
     gaoshu = len(high_list)
-    gaoshu_list = gaoshu.append(gaoshu)
+    gaoshu_list.append(gaoshu)
     zhongshu = len(middle_list)
-    zhongshu_list = zhongshu.append(zhongshu)
+    zhongshu_list.append(zhongshu)
     dishu = len(low_list)
-    dishu_list = dishu.append(dishu)
+    dishu_list.append(dishu)
     zongshu = len(zong_list)
-    zongshu_list = zongshu.append(zongshu)
-
+    zongshu_list.append(zongshu)
 
 
 sht.range('A1:B1:C1:D1:E1:F1').value = ['IP地址','高','中','低','总','漏洞详情']
@@ -123,9 +128,8 @@ for D,Di in zip (d_list,dishu_list):
     sht.range(D).value = Di
 for E,Z in zip (e_list,zongshu_list):        
     sht.range(E).value = Z
-# for F in f_list:        
-#     sht.range(F).value = ld_list
-
+for F,LD in zip (f_list,ld_list):
+    sht.range(F).value = LD
 
 wb.save('bbb.xlsx')
 wb.close()
